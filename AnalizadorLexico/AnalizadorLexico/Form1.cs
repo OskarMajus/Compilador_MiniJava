@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Text.RegularExpressions;
+
 
 namespace AnalizadorLexico
 {
@@ -25,42 +27,57 @@ namespace AnalizadorLexico
 
         private void btnBuscar_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             OpenFileDialog ventana = new OpenFileDialog();
             string nombreArchivo = "";
             string rutaArchivo = "";
+            int cantidadlineas = 0;
+            string linea = "";
+
 
             if (ventana.ShowDialog()== DialogResult.OK)
             {
                 rutaArchivo = ventana.FileName;
                 nombreArchivo = ventana.SafeFileName;
-            }
+            }                   
+            
+            lnombreArchivo.Text = nombreArchivo;
+            lrutaArchivo.Text = rutaArchivo;
+            StreamReader lectorArchivo = new StreamReader(rutaArchivo);
+            StringBuilder builder = new StringBuilder();
 
-            Cursor.Current = Cursors.WaitCursor;
-            try 
-            {
-                lnombreArchivo.Text = nombreArchivo;
-                lrutaArchivo.Text = rutaArchivo;
-                StreamReader sr = new StreamReader(rutaArchivo);
-                rchtbxArchivo.Text = sr.ReadToEnd(); //lee el archivo completo, no linea por linea
-                sr.Close();
-                
-            }
-            catch 
-            {
-            }
-            finally 
-            {
-                Cursor.Current = Cursors.Default;
-                btnBuscar.Visible = false;
-                btnEscanear.Visible = true;
+          
 
-            }
+            //linea = lectorArchivo.ReadLine();
+
+            while ((linea = lectorArchivo.ReadLine()) != null)//while (lectorArchivo.Peek()>-1) 
+            {
+                //linea = lectorArchivo.ReadLine();
+                builder.AppendLine(linea);
+               
+                cantidadlineas++;
+            }                    
+
+            lectorArchivo.Close();
+            rchtbxArchivo.Text = builder.ToString();
+
+            MessageBox.Show("El archivo tiene: " + cantidadlineas + " lineas");
+
+
+
+
+            Cursor.Current = Cursors.Default;
+          
 
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
+        private void btnEscanear_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
 
+
+
+            Cursor.Current = Cursors.Default;
         }
     }
 }

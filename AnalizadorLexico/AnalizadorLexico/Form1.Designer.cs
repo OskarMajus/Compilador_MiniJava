@@ -42,10 +42,10 @@
             this.dGV_Token_Lexema = new System.Windows.Forms.DataGridView();
             this.Token = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Lexema = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label3 = new System.Windows.Forms.Label();
             this.Fila = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Columna = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dGV_Token_Lexema)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -110,6 +110,7 @@
             this.btnEscanear.Text = "Escanear";
             this.btnEscanear.UseVisualStyleBackColor = true;
             this.btnEscanear.Visible = false;
+            this.btnEscanear.Click += new System.EventHandler(this.btnEscanear_Click);
             // 
             // openFileDialog1
             // 
@@ -174,6 +175,16 @@
             this.Lexema.HeaderText = "Lexema";
             this.Lexema.Name = "Lexema";
             // 
+            // Fila
+            // 
+            this.Fila.HeaderText = "Fila";
+            this.Fila.Name = "Fila";
+            // 
+            // Columna
+            // 
+            this.Columna.HeaderText = "Columna";
+            this.Columna.Name = "Columna";
+            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.White;
@@ -183,7 +194,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1001, 52);
             this.panel1.TabIndex = 17;
-            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
             // label3
             // 
@@ -197,16 +207,6 @@
             this.label3.Size = new System.Drawing.Size(200, 25);
             this.label3.TabIndex = 0;
             this.label3.Text = "Analizador Léxico";
-            // 
-            // Fila
-            // 
-            this.Fila.HeaderText = "Fila";
-            this.Fila.Name = "Fila";
-            // 
-            // Columna
-            // 
-            this.Columna.HeaderText = "Columna";
-            this.Columna.Name = "Columna";
             // 
             // Form1
             // 
