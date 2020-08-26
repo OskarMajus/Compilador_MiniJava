@@ -75,6 +75,8 @@ namespace AnalizadorLexico
         {
             Cursor.Current = Cursors.WaitCursor;
 
+            Scanner Scan = new Scanner(rchtbxArchivo.Text);
+
 
 
             Cursor.Current = Cursors.Default;
