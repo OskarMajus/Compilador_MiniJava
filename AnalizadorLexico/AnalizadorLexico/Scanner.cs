@@ -34,8 +34,11 @@ namespace AnalizadorLexico
         
 
         public string Lector(int fila) {
+            //Valor final de cadena
+            char finalCadena = '#';
+
             //EXPRESIONES REGULARES
-            string AllowedChars = @"([a-zA-Z]|\$|\@)"; // Ids
+            string AllowedChars = @"([a-zA-Z]|\$)"; // Ids
             string AllowedNumbers = @"(\d)"; // Numers
             string AllowedSpace = @"(\s|#)"; //space, tab, next line, etc.
             string AllowedOperators = @"(\[\]|\[|\]|\(\)|\(|\)|\{\}|\{|\}|\+|\-|\*|\/|\%|\<\=|\>\=|\<|\>|\=\=|\=|\!\=|\!|\&\&|\|\||;|,|\.)"; //Operadores, parentesis, corchetes y llaves
@@ -48,6 +51,7 @@ namespace AnalizadorLexico
             string nameTokenReservadas = "reservada"; //nombre del token para palabras reservadas
             string nameTokenComment = "comentario"; //nombre del token para comentarios
             string nameTokenOperador = "operador";
+            string nameTokenString = "string";
             int columna = 0; //Fila esta siendo recorrida en el ciclo
 
             //PALABRAS RESERVADAS
@@ -61,10 +65,12 @@ namespace AnalizadorLexico
             //Crea las lineas del parrafo para leerlo
             string[] lineasParrafo = text.Split('\n');
             //Recorre cada linea llamando al contador fila y al texto linea
-            for (int i = 0; i < fila; i++)
+            int i = 0;string linea;
+            foreach (string line in lineasParrafo)
+            //for (int i = 0; i < fila; i++)
             {
-                string linea = lineasParrafo[i];
-                linea += "#";
+                //string linea = lineasParrafo[i];
+                linea = line + "#";
                 //Inicializa la columna para poder iniciar en el char 0
                 columna = 0;
                 for (int j = 0; j < linea.Length;j++)
@@ -93,13 +99,18 @@ namespace AnalizadorLexico
                                     palabra = letra + "";
                                     saveToken(nameTokenOperador, palabra, i, j);
                                 }
+                                //Sino revisa si es STRING
+                                else if (letra == '"') {
+                                    stage = 6;
+                                }
                                 //Sino se come los espacios
                                 else if (Regex.IsMatch(letra + "", AllowedSpace))
                                 {
                                     stage = 0;
                                 }
                                 //Si no es nada de esto es un error
-                                else {
+                                else
+                                {
                                     stage = 0;
                                     errores.Add(errorMessage(i, j, palabra));
                                 }
@@ -151,7 +162,18 @@ namespace AnalizadorLexico
                                 else
                                 {
                                     stage = 0;
-                                    errores.Add(errorMessage(i, j, palabra));
+                                    errores.Add(errorMessage(i, j, letra + ""));
+                                    //Revisa si es una palabra reservada
+                                    if (reservadas.Contains(palabra))
+                                    {
+                                        //Crea el token que guardara la palabra que se traia COMO RESERVADA
+                                        saveToken(nameTokenReservadas, palabra, i, j);
+                                    }
+                                    else
+                                    {
+                                        //Crea el token que guardara la palabra que se traia 
+                                        saveToken(nameTokenID, palabra, i, j);
+                                    }
                                 }
                                 break;
                             }
@@ -198,11 +220,178 @@ namespace AnalizadorLexico
                                 else
                                 {
                                     stage = 0;
-                                    errores.Add(errorMessage(i,j,palabra));
+                                    errores.Add(errorMessage(i,j,letra+""));
+                                    //Crea el token que guardara el numero que se traia 
+                                    saveToken(nameTokenInt, palabra, i, j);
                                 }
                                 break;
                             }
+                        case 3: //Busca numeros DOUBLE
+                            {                                
+                                if (Regex.IsMatch(letra + "", AllowedNumbers))
+                                {
+                                    palabra += letra;
+                                    stage = 3;
+                                }
+                                //Si viene una E o e es un exponente
+                                else if (letra == 'E' || letra == 'e') 
+                                {
+                                    stage = 4;
+                                    palabra += letra;
+                                }
+                                //Si viene una letra acepta la cadena e inicia la siguiente
+                                else if (Regex.IsMatch(letra + "", AllowedChars))
+                                {
+                                    stage = 1;
+                                    //Crea el token que guardara el numero que se traia 
+                                    saveToken(nameTokenDouble, palabra, i, j);
+                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador 
+                                    palabra = letra + "";
+                                }
+                                //Si viene un operador acepta la cadena que traia e inicia la siguiente
+                                else if (Regex.IsMatch(letra + "", AllowedOperators))
+                                {
+                                    stage = 0;
+                                    //Crea el token que guardara el numero que se traia 
+                                    saveToken(nameTokenDouble, palabra, i, j);
+                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador 
+                                    palabra = letra + "";
+                                    saveToken(nameTokenOperador, palabra, i, j);
+                                }
+                                //Si es espacio acepta y se va a la siguiente letra
+                                else if (Regex.IsMatch(letra + "", AllowedSpace))
+                                {
+                                    stage = 0;
+                                    //Crea el token que guardara el numero que se traia 
+                                    saveToken(nameTokenDouble, palabra, i, j);
+                                }
+                                //Si no es nada de esto es un error
+                                else
+                                {
+                                    stage = 0;
+                                    errores.Add(errorMessage(i, j, letra + ""));
+                                    //Crea el token que guardara el numero que se traia 
+                                    saveToken(nameTokenDouble, palabra, i, j);
+                                }
+                                break;
+                            }
+                        case 4: //Busca exponente E,e
+                            {
+                                //Busca numeros
+                                if (Regex.IsMatch(letra + "", AllowedNumbers))
+                                {
+                                    palabra += letra;
+                                    stage = 4;
+                                }
+                                //Si viene una E o e es un exponente
+                                else if (letra == '-' || letra == '+')
+                                {
+                                    stage = 5;
+                                    palabra += letra;
+                                }
+                                //Si viene una letra acepta la cadena e inicia la siguiente
+                                else if (Regex.IsMatch(letra + "", AllowedChars))
+                                {
+                                    stage = 1;
+                                    //Crea el token que guardara el numero que se traia 
+                                    saveToken(nameTokenDouble, palabra, i, j);
+                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador 
+                                    palabra = letra + "";
+                                }
+                                //Si viene un operador acepta la cadena que traia e inicia la siguiente
+                                else if (Regex.IsMatch(letra + "", AllowedOperators))
+                                {
+                                    stage = 0;
+                                    //Crea el token que guardara el numero que se traia 
+                                    saveToken(nameTokenDouble, palabra, i, j);
+                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador 
+                                    palabra = letra + "";
+                                    saveToken(nameTokenOperador, palabra, i, j);
+                                }
+                                //Si es espacio acepta y se va a la siguiente letra
+                                else if (Regex.IsMatch(letra + "", AllowedSpace))
+                                {
+                                    stage = 0;
+                                    //Crea el token que guardara el numero que se traia 
+                                    saveToken(nameTokenDouble, palabra, i, j);
+                                }
+                                //Si no es nada de esto es un error
+                                else
+                                {
+                                    stage = 0;
+                                    errores.Add(errorMessage(i, j, letra + ""));
+                                    //Crea el token que guardara el numero que se traia 
+                                    saveToken(nameTokenDouble, palabra, i, j);
+                                }
+                                break;
+                            }
+                        case 5: //Busca el valor del exponente
+                            {
+                                //Busca numeros
+                                if (Regex.IsMatch(letra + "", AllowedNumbers))
+                                {
+                                    palabra += letra;
+                                    stage = 5;
+                                }
+                                //Si viene una letra acepta la cadena e inicia la siguiente
+                                else if (Regex.IsMatch(letra + "", AllowedChars))
+                                {
+                                    stage = 1;
+                                    //Crea el token que guardara el numero que se traia 
+                                    saveToken(nameTokenDouble, palabra, i, j);
+                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador 
+                                    palabra = letra + "";
+                                }
+                                //Si viene un operador acepta la cadena que traia e inicia la siguiente
+                                else if (Regex.IsMatch(letra + "", AllowedOperators))
+                                {
+                                    stage = 0;
+                                    //Crea el token que guardara el numero que se traia 
+                                    saveToken(nameTokenDouble, palabra, i, j);
+                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador 
+                                    palabra = letra + "";
+                                    saveToken(nameTokenOperador, palabra, i, j);
+                                }
+                                //Si es espacio acepta y se va a la siguiente letra
+                                else if (Regex.IsMatch(letra + "", AllowedSpace))
+                                {
+                                    stage = 0;
+                                    //Crea el token que guardara el numero que se traia 
+                                    saveToken(nameTokenDouble, palabra, i, j);
+                                }
+                                //Si no es nada de esto es un error
+                                else
+                                {
+                                    stage = 0;
+                                    errores.Add(errorMessage(i, j, letra + ""));
+                                    //Crea el token que guardara el numero que se traia 
+                                    saveToken(nameTokenDouble, palabra, i, j);
+                                }
+                                break;
+                            }
+                        case 6: //Busca STRING
+                            {
+                                //Se come cualquier valor y agrega al string
+                                if (letra == finalCadena)
+                                {
+                                    stage = 0;
+                                    errores.Add(errorMessage(i, j, palabra + " --- SE ESPERABA UN \""));
 
+                                }
+                                else if (letra == '"')
+                                {
+                                    stage = 0;
+                                    palabra += letra;
+                                    //Crea el token tipo STRING
+                                    saveToken(nameTokenString, palabra, i, j);
+                                }
+                                else
+                                {
+                                    stage = 6;
+                                    palabra += letra;
+                                }
+                                break;
+                            }
                         default:
                             {
                                 break;
@@ -211,7 +400,7 @@ namespace AnalizadorLexico
                     //Aumenta el contador de la columna en la fila
                     columna = j;
                 }
-                
+                i++;
             }
             string salida = "Numero de filas: " + fila.ToString() + " y de la ultima fila columna: " + columna.ToString();
             return salida;
@@ -219,7 +408,7 @@ namespace AnalizadorLexico
 
         protected string errorMessage(int linea, int columna, string palabra) {
             //se le agrega el +1 en linea y columna ya que el contador normal inicia en 0 y no se entiende
-            return "Fallo en la linea " + (linea+1).ToString() + " columna " + (columna+1).ToString() + " despues de la palabra " + palabra;
+            return "Fallo en la linea " + (linea+1).ToString() + " columna " + (columna+1).ToString() + " Caracter invalido: " + palabra;
         }
 
         protected bool saveToken(string nombre, string lexema, int linea, int columna) {
