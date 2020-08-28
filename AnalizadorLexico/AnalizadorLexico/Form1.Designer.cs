@@ -40,10 +40,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.lrutaArchivo = new System.Windows.Forms.Label();
             this.dGV_Token_Lexema = new System.Windows.Forms.DataGridView();
-            this.Token = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Lexema = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Fila = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Columna = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dGV_Token_Lexema)).BeginInit();
@@ -154,35 +150,10 @@
             // dGV_Token_Lexema
             // 
             this.dGV_Token_Lexema.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dGV_Token_Lexema.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Token,
-            this.Lexema,
-            this.Fila,
-            this.Columna});
             this.dGV_Token_Lexema.Location = new System.Drawing.Point(514, 270);
             this.dGV_Token_Lexema.Name = "dGV_Token_Lexema";
             this.dGV_Token_Lexema.Size = new System.Drawing.Size(445, 327);
             this.dGV_Token_Lexema.TabIndex = 16;
-            // 
-            // Token
-            // 
-            this.Token.HeaderText = "Tokens";
-            this.Token.Name = "Token";
-            // 
-            // Lexema
-            // 
-            this.Lexema.HeaderText = "Lexema";
-            this.Lexema.Name = "Lexema";
-            // 
-            // Fila
-            // 
-            this.Fila.HeaderText = "Fila";
-            this.Fila.Name = "Fila";
-            // 
-            // Columna
-            // 
-            this.Columna.HeaderText = "Columna";
-            this.Columna.Name = "Columna";
             // 
             // panel1
             // 
@@ -249,12 +220,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lrutaArchivo;
         private System.Windows.Forms.DataGridView dGV_Token_Lexema;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Token;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Lexema;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Fila;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Columna;
     }
 }
 

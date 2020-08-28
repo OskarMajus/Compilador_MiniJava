@@ -80,13 +80,37 @@ namespace AnalizadorLexico
 
             Scan.Lector(cantidadLineas);
             
-
-            foreach (string error in Scan.errores)
+            //Recorre la cola de errores y los despliega
+            foreach (string error in Scan.GetErrors)
             {
                 lstbxErrores.Items.Add(error);
             }
 
-            
+            //Crea un DataTable para poder luego desplegar los Tokens
+            DataTable dtTokens = new DataTable("Tokens");
+            //Crea las columnas de la tabla
+            DataColumn dcTokens = new DataColumn("Tokens");
+            DataColumn dcLexema = new DataColumn("Lexemas");
+            DataColumn dcFila = new DataColumn("Fila");
+            DataColumn dcColumna = new DataColumn("Columna");
+            //Agrega las columnas a la tabla
+            dtTokens.Columns.Add(dcTokens);
+            dtTokens.Columns.Add(dcLexema);
+            dtTokens.Columns.Add(dcFila);
+            dtTokens.Columns.Add(dcColumna);
+            //recorre la cola de tokens y los despliega
+            foreach (Token token in Scan.GetTokens)
+            {
+                //Crea el dataRow para agregar a la tabla
+                DataRow row = dtTokens.NewRow();
+                row["Tokens"] = token.Nombre;
+                row["Lexemas"] = token.Lexema;
+                row["Fila"] = token.Linea;
+                row["Columna"] = token.Columna;
+                dtTokens.Rows.Add(row);
+            }
+
+            dGV_Token_Lexema.DataSource = dtTokens;
 
             Cursor.Current = Cursors.Default;
         }

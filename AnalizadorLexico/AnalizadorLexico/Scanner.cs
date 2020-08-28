@@ -15,11 +15,23 @@ namespace AnalizadorLexico
         string text = string.Empty;
 
         //Lista de tokens
-        private List<Token> Tokens = new List<Token>();
+        protected List<Token> Tokens = new List<Token>();
         //Lista de errores
-        public List<string> errores = new List<string>();
+        protected List<string> errores = new List<string>();
 
         public Scanner(string texto) => text = texto;
+
+        //Properties get & set
+        public List<Token> GetTokens
+        {
+            get { return Tokens; }
+        }
+
+        public List<string> GetErrors
+        {
+            get { return errores; }
+        }
+        
 
         public string Lector(int fila) {
             //EXPRESIONES REGULARES
@@ -223,7 +235,6 @@ namespace AnalizadorLexico
             }            
         }
 
-        public List<Token> GetTokens { get; }
         
     }
 }
