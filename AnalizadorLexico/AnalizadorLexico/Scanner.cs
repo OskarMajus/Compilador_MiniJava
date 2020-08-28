@@ -35,7 +35,7 @@ namespace AnalizadorLexico
 
         public string Lector(int fila) {
             //EXPRESIONES REGULARES
-            string AllowedChars = @"([a-zA-Z]|\$)"; // Ids
+            string AllowedChars = @"([a-zA-Z]|\$|\@)"; // Ids
             string AllowedNumbers = @"(\d)"; // Numers
             string AllowedSpace = @"(\s|#)"; //space, tab, next line, etc.
             string AllowedOperators = @"(\[\]|\[|\]|\(\)|\(|\)|\{\}|\{|\}|\+|\-|\*|\/|\%|\<\=|\>\=|\<|\>|\=\=|\=|\!\=|\!|\&\&|\|\||;|,|\.)"; //Operadores, parentesis, corchetes y llaves
@@ -51,9 +51,9 @@ namespace AnalizadorLexico
             int columna = 0; //Fila esta siendo recorrida en el ciclo
 
             //PALABRAS RESERVADAS
-            string reservadas = "void boolean const this int string interface extends " +
-                "double class null implements for while if else return break new system" +
-                "out println";
+            string[] reservadas = { "void", "boolean", "const", "this", "int", "string", "interface", "extends",
+                "double", "class", "null", "implements", "for", "while", "if", "else", "return", "break", "new", "system",
+                "out", "println" };
 
             //Es el estado para el AFD
             int stage = 0;
@@ -225,7 +225,7 @@ namespace AnalizadorLexico
         protected bool saveToken(string nombre, string lexema, int linea, int columna) {
             try
             {
-                Token token = new Token(nombre, lexema, linea, columna);
+                Token token = new Token(nombre, lexema, linea+1, columna+1);
                 Tokens.Add(token);
                 return true;
             }
