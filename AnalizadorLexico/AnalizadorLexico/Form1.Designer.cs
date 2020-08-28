@@ -109,7 +109,6 @@
             this.btnEscanear.TabIndex = 10;
             this.btnEscanear.Text = "Escanear";
             this.btnEscanear.UseVisualStyleBackColor = true;
-            this.btnEscanear.Visible = false;
             this.btnEscanear.Click += new System.EventHandler(this.btnEscanear_Click);
             // 
             // openFileDialog1

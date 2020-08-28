@@ -25,13 +25,14 @@ namespace AnalizadorLexico
 
         }
 
+        int cantidadLineas = 0;
+
         private void btnBuscar_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
             OpenFileDialog ventana = new OpenFileDialog();
             string nombreArchivo = "";
             string rutaArchivo = "";
-            int cantidadlineas = 0;
             string linea = "";
 
 
@@ -55,13 +56,13 @@ namespace AnalizadorLexico
                 //linea = lectorArchivo.ReadLine();
                 builder.AppendLine(linea);
                
-                cantidadlineas++;
+                cantidadLineas++;
             }                    
 
             lectorArchivo.Close();
             rchtbxArchivo.Text = builder.ToString();
 
-            MessageBox.Show("El archivo tiene: " + cantidadlineas + " lineas");
+            MessageBox.Show("El archivo tiene: " + cantidadLineas + " lineas");
 
 
 
@@ -77,7 +78,15 @@ namespace AnalizadorLexico
 
             Scanner Scan = new Scanner(rchtbxArchivo.Text);
 
+            Scan.Lector(cantidadLineas);
+            
 
+            foreach (string error in Scan.errores)
+            {
+                lstbxErrores.Items.Add(error);
+            }
+
+            
 
             Cursor.Current = Cursors.Default;
         }
