@@ -179,23 +179,57 @@ namespace AnalizadorLexico
                             }
                         case 2: // Acepta Numeros u Operador
                             {
+                                //Revisa si es HEX
+                                if (palabra.Contains("0") && (letra == 'x' || letra == 'X'))
+                                {
+                                    palabra += letra;
+                                    stage = 2;
+                                }
+                                //Revisa los caracteres A, B, C, D, E, F del HEX
+                                else if ((Regex.IsMatch(palabra+letra, @"(0x|0X)(\d|[a-fA-F])+")) && (Regex.IsMatch(letra + "", @"(\d|[a-fA-F])")) )
+                                {
+                                    palabra += letra;
+                                    stage = 2;
+                                }
                                 //Busca numeros
-                                if (Regex.IsMatch(letra + "", AllowedNumbers))
+                                else if (Regex.IsMatch(letra + "", AllowedNumbers))
                                 {
                                     palabra += letra;
                                     stage = 2;
                                 }
                                 //Si viene punto busca ser Double
-                                else if (letra == '.') {
-                                    stage = 3;
-                                    palabra += letra;
+                                else if (letra == '.')
+                                {
+                                    if (Regex.IsMatch(palabra, @"(0x|0X)(\d|[a-fA-F])+"))
+                                    {
+                                        stage = 0;
+                                        //Crea el token que guardara el numero que se traia 
+                                        saveToken(nameTokenInt, palabra, i, j);
+                                        //reinicia la palabra al caracter actual y lo guarda ya que es un operador 
+                                        palabra = letra + "";
+                                        saveToken(nameTokenOperador, palabra, i, j);
+                                    }
+                                    else
+                                    {
+                                        stage = 3;
+                                        palabra += letra;
+                                    }
                                 }
                                 //Si viene una letra acepta la cadena e inicia la siguiente
                                 else if (Regex.IsMatch(letra + "", AllowedChars))
                                 {
                                     stage = 1;
-                                    //Crea el token que guardara el numero que se traia 
-                                    saveToken(nameTokenInt, palabra, i, j);
+                                    //Revisa que si es HEX no este "vacio"
+                                    if (palabra.ToLower().Equals("0x"))
+                                    {
+                                        errores.Add(errorMessage(i, j, palabra + "--- NO ES VALIDO EL INT HEX SIN UN VALOR CORRESPONDIENTE"));
+
+                                    }
+                                    else
+                                    {
+                                        //Crea el token que guardara el numero que se traia 
+                                        saveToken(nameTokenInt, palabra, i, j);
+                                    }
                                     //reinicia la palabra al caracter actual y lo guarda ya que es un operador 
                                     palabra = letra + "";
                                 }
@@ -214,13 +248,13 @@ namespace AnalizadorLexico
                                 {
                                     stage = 0;
                                     //Crea el token que guardara el numero que se traia 
-                                    saveToken(nameTokenInt, palabra, i, j);                                    
+                                    saveToken(nameTokenInt, palabra, i, j);
                                 }
                                 //Si no es nada de esto es un error
                                 else
                                 {
                                     stage = 0;
-                                    errores.Add(errorMessage(i,j,letra+""));
+                                    errores.Add(errorMessage(i, j, letra + ""));
                                     //Crea el token que guardara el numero que se traia 
                                     saveToken(nameTokenInt, palabra, i, j);
                                 }
@@ -375,7 +409,7 @@ namespace AnalizadorLexico
                                 if (letra == finalCadena)
                                 {
                                     stage = 0;
-                                    errores.Add(errorMessage(i, j, palabra + " --- SE ESPERABA UN \""));
+                                    errores.Add(errorMessage(i, j, palabra + "-- - SE ESPERABA UN \""));
 
                                 }
                                 else if (letra == '"')
