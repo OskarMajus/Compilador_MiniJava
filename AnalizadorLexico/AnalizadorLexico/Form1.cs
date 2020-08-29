@@ -118,5 +118,42 @@ namespace AnalizadorLexico
 
             Cursor.Current = Cursors.Default;
         }
+
+        private void btnGuardar_Click(object sender, EventArgs e)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+
+            try
+            {
+                SaveFileDialog guardarArchivo = new SaveFileDialog();
+                string nombreArchivo = lnombreArchivo.Text;
+                string rutaArchivo = guardarArchivo.FileName;
+                guardarArchivo.FileName = "salida_" + nombreArchivo + ".out";
+                guardarArchivo.DefaultExt = "out";
+
+                if (guardarArchivo.ShowDialog()==DialogResult.OK)
+                {
+                    Stream filestream = guardarArchivo.OpenFile();
+                    StreamWriter escritorArchivo = new StreamWriter(filestream);
+                    for (int i = 0; i < dGV_Token_Lexema.Rows.Count-1; i++)
+                    {
+                        for (int j = 0; j < dGV_Token_Lexema.Columns.Count; j++)
+                        {
+                            escritorArchivo.WriteLine(dGV_Token_Lexema.Rows[i].Cells[j].Value.ToString());
+                        }
+                    }
+
+                    escritorArchivo.Flush();
+                    escritorArchivo.Close();
+                }
+            }
+            catch (Exception)
+            {
+
+                MessageBox.Show("Error al guardar el Archivo");
+            }
+
+            Cursor.Current = Cursors.Default;
+        }
     }
 }

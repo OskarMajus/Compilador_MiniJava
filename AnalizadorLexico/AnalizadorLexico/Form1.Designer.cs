@@ -42,6 +42,7 @@
             this.dGV_Token_Lexema = new System.Windows.Forms.DataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
+            this.btnGuardar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dGV_Token_Lexema)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -153,9 +154,9 @@
             // dGV_Token_Lexema
             // 
             this.dGV_Token_Lexema.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dGV_Token_Lexema.Location = new System.Drawing.Point(514, 69);
+            this.dGV_Token_Lexema.Location = new System.Drawing.Point(514, 155);
             this.dGV_Token_Lexema.Name = "dGV_Token_Lexema";
-            this.dGV_Token_Lexema.Size = new System.Drawing.Size(445, 528);
+            this.dGV_Token_Lexema.Size = new System.Drawing.Size(445, 442);
             this.dGV_Token_Lexema.TabIndex = 16;
             // 
             // panel1
@@ -181,12 +182,24 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "Analizador Léxico";
             // 
+            // btnGuardar
+            // 
+            this.btnGuardar.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnGuardar.Location = new System.Drawing.Point(542, 69);
+            this.btnGuardar.Name = "btnGuardar";
+            this.btnGuardar.Size = new System.Drawing.Size(408, 39);
+            this.btnGuardar.TabIndex = 18;
+            this.btnGuardar.Text = "Guardar Archivo";
+            this.btnGuardar.UseVisualStyleBackColor = true;
+            this.btnGuardar.Click += new System.EventHandler(this.btnGuardar_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1001, 609);
+            this.Controls.Add(this.btnGuardar);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.dGV_Token_Lexema);
             this.Controls.Add(this.lrutaArchivo);
@@ -225,6 +238,7 @@
         private System.Windows.Forms.DataGridView dGV_Token_Lexema;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnGuardar;
     }
 }
 
