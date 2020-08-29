@@ -52,12 +52,14 @@ namespace AnalizadorLexico
             string nameTokenComment = "comentario"; //nombre del token para comentarios
             string nameTokenOperador = "operador";
             string nameTokenString = "string";
+            string nameTokenBool = "bool";
             int columna = 0; //Fila esta siendo recorrida en el ciclo
 
             //PALABRAS RESERVADAS
             string[] reservadas = { "void", "boolean", "const", "this", "int", "string", "interface", "extends",
                 "double", "class", "null", "implements", "for", "while", "if", "else", "return", "break", "new", "system",
                 "out", "println" };
+            string[] booleanos = { "true", "false" };
 
             //Es el estado para el AFD
             int stage = 0;
@@ -66,6 +68,9 @@ namespace AnalizadorLexico
             string[] lineasParrafo = text.Split('\n');
             //Recorre cada linea llamando al contador fila y al texto linea
             int i = 0;string linea;
+            
+            //Este int indica el EOF abierto 1 = string, 2= comentario
+            int EOF = 0;
             foreach (string line in lineasParrafo)
             //for (int i = 0; i < fila; i++)
             {
@@ -77,7 +82,7 @@ namespace AnalizadorLexico
                 {
                     char letra = linea[j];
                     switch (stage)
-                    {
+                    {                        
                         case 0: // Acepta operadores o inicia IDs o inicia numeros o es error
                             {
                                 palabra = letra+"";
@@ -91,6 +96,11 @@ namespace AnalizadorLexico
                                 {
                                     stage = 2;
                                 }
+                                //Revisa por comentarios
+                                else if (letra == '/')
+                                {
+                                    stage = 7;
+                                }
                                 //Sino revisa si es operador y acepta la cadena
                                 else if (Regex.IsMatch(letra + "", AllowedOperators))
                                 {
@@ -100,7 +110,8 @@ namespace AnalizadorLexico
                                     saveToken(nameTokenOperador, palabra, i, j);
                                 }
                                 //Sino revisa si es STRING
-                                else if (letra == '"') {
+                                else if (letra == '"')
+                                {
                                     stage = 6;
                                 }
                                 //Sino se come los espacios
@@ -126,21 +137,32 @@ namespace AnalizadorLexico
                                 }
                                 //Sino acepta la cadena que traia e inicia la siguiente
                                 else if (Regex.IsMatch(letra + "", AllowedOperators)){
-                                    stage = 0;
+                                    
                                     //Revisa si es una palabra reservada
                                     if (reservadas.Contains(palabra))
                                     {
                                         //Crea el token que guardara la palabra que se traia COMO RESERVADA
                                         saveToken(nameTokenReservadas, palabra, i, j);
                                     }
+                                    else if (booleanos.Contains(palabra)) {
+                                        //Crea el token que guardara la palabra como bool (True|False)
+                                        saveToken(nameTokenBool, palabra, i, j);
+                                    }
                                     else
                                     {
                                         //Crea el token que guardara la palabra que se traia 
                                         saveToken(nameTokenID, palabra, i, j);
                                     }
-                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador 
-                                    palabra = letra+"";
-                                    saveToken(nameTokenOperador, palabra, i, j);
+                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador
+                                    if (letra == '/') {
+                                        stage = 7;
+                                    }
+                                    else
+                                    {
+                                        stage = 0;
+                                        palabra = letra + "";
+                                        saveToken(nameTokenOperador, palabra, i, j);
+                                    }
                                 }
                                 //Si viene espacio acepta la cadena que traia e inicia la siguiente
                                 else if (Regex.IsMatch(letra + "", AllowedSpace))
@@ -151,6 +173,11 @@ namespace AnalizadorLexico
                                     {
                                         //Crea el token que guardara la palabra que se traia COMO RESERVADA
                                         saveToken(nameTokenReservadas, palabra, i, j);
+                                    }
+                                    else if (booleanos.Contains(palabra))
+                                    {
+                                        //Crea el token que guardara la palabra como bool (True|False)
+                                        saveToken(nameTokenBool, palabra, i, j);
                                     }
                                     else
                                     {
@@ -168,6 +195,11 @@ namespace AnalizadorLexico
                                     {
                                         //Crea el token que guardara la palabra que se traia COMO RESERVADA
                                         saveToken(nameTokenReservadas, palabra, i, j);
+                                    }
+                                    else if (booleanos.Contains(palabra))
+                                    {
+                                        //Crea el token que guardara la palabra como bool (True|False)
+                                        saveToken(nameTokenBool, palabra, i, j);
                                     }
                                     else
                                     {
@@ -236,12 +268,18 @@ namespace AnalizadorLexico
                                 //Si viene un operador acepta la cadena que traia e inicia la siguiente
                                 else if (Regex.IsMatch(letra + "", AllowedOperators))
                                 {
-                                    stage = 0;
                                     //Crea el token que guardara el numero que se traia 
                                     saveToken(nameTokenInt, palabra, i, j);
-                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador 
-                                    palabra = letra + "";
-                                    saveToken(nameTokenOperador, palabra, i, j);
+                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador
+                                    if (letra == '/')
+                                    {
+                                        stage = 7;
+                                    }
+                                    else
+                                    {
+                                        stage = 0;
+                                        saveToken(nameTokenOperador, letra+"", i, j);
+                                    }                                                                    
                                 }
                                 //Si es espacio acepta y se va a la siguiente letra
                                 else if (Regex.IsMatch(letra + "", AllowedSpace))
@@ -285,12 +323,19 @@ namespace AnalizadorLexico
                                 //Si viene un operador acepta la cadena que traia e inicia la siguiente
                                 else if (Regex.IsMatch(letra + "", AllowedOperators))
                                 {
-                                    stage = 0;
+                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador
+                                    if (letra == '/')
+                                    {
+                                        stage = 7;
+                                    }
+                                    else
+                                    {
+                                        stage = 0;
+                                        palabra = letra + "";
+                                        saveToken(nameTokenOperador, palabra, i, j);
+                                    }
                                     //Crea el token que guardara el numero que se traia 
                                     saveToken(nameTokenDouble, palabra, i, j);
-                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador 
-                                    palabra = letra + "";
-                                    saveToken(nameTokenOperador, palabra, i, j);
                                 }
                                 //Si es espacio acepta y se va a la siguiente letra
                                 else if (Regex.IsMatch(letra + "", AllowedSpace))
@@ -335,12 +380,19 @@ namespace AnalizadorLexico
                                 //Si viene un operador acepta la cadena que traia e inicia la siguiente
                                 else if (Regex.IsMatch(letra + "", AllowedOperators))
                                 {
-                                    stage = 0;
+                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador
+                                    if (letra == '/')
+                                    {
+                                        stage = 7;
+                                    }
+                                    else
+                                    {
+                                        stage = 0;
+                                        palabra = letra + "";
+                                        saveToken(nameTokenOperador, palabra, i, j);
+                                    }
                                     //Crea el token que guardara el numero que se traia 
                                     saveToken(nameTokenDouble, palabra, i, j);
-                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador 
-                                    palabra = letra + "";
-                                    saveToken(nameTokenOperador, palabra, i, j);
                                 }
                                 //Si es espacio acepta y se va a la siguiente letra
                                 else if (Regex.IsMatch(letra + "", AllowedSpace))
@@ -379,12 +431,19 @@ namespace AnalizadorLexico
                                 //Si viene un operador acepta la cadena que traia e inicia la siguiente
                                 else if (Regex.IsMatch(letra + "", AllowedOperators))
                                 {
-                                    stage = 0;
+                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador
+                                    if (letra == '/')
+                                    {
+                                        stage = 7;
+                                    }
+                                    else
+                                    {
+                                        stage = 0;
+                                        palabra = letra + "";
+                                        saveToken(nameTokenOperador, palabra, i, j);
+                                    }
                                     //Crea el token que guardara el numero que se traia 
                                     saveToken(nameTokenDouble, palabra, i, j);
-                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador 
-                                    palabra = letra + "";
-                                    saveToken(nameTokenOperador, palabra, i, j);
                                 }
                                 //Si es espacio acepta y se va a la siguiente letra
                                 else if (Regex.IsMatch(letra + "", AllowedSpace))
@@ -409,11 +468,12 @@ namespace AnalizadorLexico
                                 if (letra == finalCadena)
                                 {
                                     stage = 0;
-                                    errores.Add(errorMessage(i, j, palabra + "-- - SE ESPERABA UN \""));
-
+                                    errores.Add(errorMessage(i, j, palabra + "--- SE ESPERABA UN \""));
+                                    EOF = 1;
                                 }
                                 else if (letra == '"')
                                 {
+                                    EOF = 0;
                                     stage = 0;
                                     palabra += letra;
                                     //Crea el token tipo STRING
@@ -422,6 +482,103 @@ namespace AnalizadorLexico
                                 else
                                 {
                                     stage = 6;
+                                    palabra += letra;
+                                }
+                                break;
+                            }
+                        case 7:
+                            {
+                                //revisa si es un comentario simple 
+                                if (letra == '/')
+                                {
+                                    stage = 8;
+                                    palabra += letra;
+                                }
+                                //revisa si es un comentario complejo
+                                else if (letra == '*')
+                                {
+                                    stage = 9;
+                                    palabra += letra;
+                                    EOF = 2;
+                                }
+                                //revisa si es una letra de ID
+                                else if (Regex.IsMatch(letra + "", AllowedChars))
+                                {
+                                    stage = 1;
+                                    //Crea el token que guardara el operador 
+                                    saveToken(nameTokenOperador, palabra, i, j);
+                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador 
+                                    palabra = letra + "";
+                                }
+                                //Si viene un operador distinto de "/" acepta el operador e inicia la siguiente
+                                else if (Regex.IsMatch(letra + "", AllowedOperators))
+                                {
+                                    stage = 0;
+                                    //Crea el token que guardara el numero que se traia 
+                                    saveToken(nameTokenOperador, palabra, i, j);
+                                    //reinicia la palabra al caracter actual y lo guarda ya que es un operador 
+                                    palabra = letra + "";
+                                    saveToken(nameTokenOperador, palabra, i, j);
+                                }
+                                //Si es espacio acepta y se va a la siguiente letra
+                                else if (Regex.IsMatch(letra + "", AllowedSpace))
+                                {
+                                    stage = 0;
+                                    //Crea el token que guardara como operador 
+                                    saveToken(nameTokenOperador, palabra, i, j);
+                                }
+                                //Si no es nada de esto es un error
+                                else
+                                {
+                                    stage = 0;
+                                    errores.Add(errorMessage(i, j, letra + ""));
+                                    //Crea el token que guardara el numero que se traia 
+                                    saveToken(nameTokenOperador, palabra, i, j);
+                                }
+                                break;
+                            }
+                        case 8: // Acepta comentarios simples
+                            {
+                                //Se come cualquier valor y agrega al string
+                                if (letra == finalCadena)
+                                {
+                                    stage = 0;
+                                    saveToken(nameTokenComment, palabra, i, j);
+                                }
+                                else
+                                {
+                                    stage = 8;
+                                    palabra += letra;
+                                }
+                                break;
+                            }
+                        case 9:
+                            {
+                                //Se come cualquier valor y agrega al string
+                                if (letra == '*')
+                                {
+                                    stage = 10;
+                                    palabra += letra;
+                                }
+                                else
+                                {
+                                    stage = 9;
+                                    palabra += letra;
+                                }
+                                
+                                break;
+                            }
+                        case 10:
+                            {
+                                if (letra == '/')
+                                {
+                                    EOF = 0;
+                                    stage = 0;
+                                    palabra += letra;
+                                    saveToken(nameTokenComment, palabra, i, j);
+                                }
+                                else {
+                                    stage = 9;
                                     palabra += letra;
                                 }
                                 break;
@@ -436,6 +593,16 @@ namespace AnalizadorLexico
                 }
                 i++;
             }
+            switch (EOF)
+            {
+                case 1:
+                    errores.Add(errorMessage(fila, columna, " --- EOF EN UNA CADENA")); break;
+                case 2:
+                    errores.Add(errorMessage(fila, columna, " --- EOF EN UN COMENTARIO")); break;
+                default:
+                    break;
+            }
+
             string salida = "Numero de filas: " + fila.ToString() + " y de la ultima fila columna: " + columna.ToString();
             return salida;
         }

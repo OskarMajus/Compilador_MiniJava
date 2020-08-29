@@ -29,47 +29,51 @@ namespace AnalizadorLexico
 
         private void btnBuscar_Click(object sender, EventArgs e)
         {
-            Cursor.Current = Cursors.WaitCursor;
-            OpenFileDialog ventana = new OpenFileDialog();
-            string nombreArchivo = "";
-            string rutaArchivo = "";
-            string linea = "";
-
-
-            if (ventana.ShowDialog()== DialogResult.OK)
+            try
             {
-                rutaArchivo = ventana.FileName;
-                nombreArchivo = ventana.SafeFileName;
-            }                   
-            
-            lnombreArchivo.Text = nombreArchivo;
-            lrutaArchivo.Text = rutaArchivo;
-            StreamReader lectorArchivo = new StreamReader(rutaArchivo);
-            StringBuilder builder = new StringBuilder();
+                Cursor.Current = Cursors.WaitCursor;
+                OpenFileDialog ventana = new OpenFileDialog();
+                string nombreArchivo = "";
+                string rutaArchivo = "";
+                string linea = "";
 
-          
+                if (ventana.ShowDialog() == DialogResult.OK)
+                {
+                    rutaArchivo = ventana.FileName;
+                    nombreArchivo = ventana.SafeFileName;
+                }
 
-            //linea = lectorArchivo.ReadLine();
+                lnombreArchivo.Text = nombreArchivo;
+                lrutaArchivo.Text = rutaArchivo;
+                StreamReader lectorArchivo = new StreamReader(rutaArchivo);
+                StringBuilder builder = new StringBuilder();
 
-            while ((linea = lectorArchivo.ReadLine()) != null)//while (lectorArchivo.Peek()>-1) 
-            {
                 //linea = lectorArchivo.ReadLine();
-                builder.AppendLine(linea);
-               
-                cantidadLineas++;
-            }                    
 
-            lectorArchivo.Close();
-            rchtbxArchivo.Text = builder.ToString();
+                while ((linea = lectorArchivo.ReadLine()) != null)//while (lectorArchivo.Peek()>-1) 
+                {
+                    //linea = lectorArchivo.ReadLine();
+                    builder.AppendLine(linea);
 
-            MessageBox.Show("El archivo tiene: " + cantidadLineas + " lineas");
+                    cantidadLineas++;
+                }
 
+                lectorArchivo.Close();
+                rchtbxArchivo.Text = builder.ToString();
 
+                //MessageBox.Show("El archivo tiene: " + cantidadLineas + " lineas");
 
+                btnEscanear.Visible = true;
+                lstbxErrores.Items.Clear();
+                
+                Cursor.Current = Cursors.Default;
 
-            Cursor.Current = Cursors.Default;
-          
+            }
+            catch (Exception)
+            {
 
+                
+            }
         }
 
         private void btnEscanear_Click(object sender, EventArgs e)

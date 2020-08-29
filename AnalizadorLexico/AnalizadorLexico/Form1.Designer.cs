@@ -61,6 +61,7 @@
             // 
             this.rchtbxArchivo.Location = new System.Drawing.Point(35, 270);
             this.rchtbxArchivo.Name = "rchtbxArchivo";
+            this.rchtbxArchivo.ShowSelectionMargin = true;
             this.rchtbxArchivo.Size = new System.Drawing.Size(408, 201);
             this.rchtbxArchivo.TabIndex = 1;
             this.rchtbxArchivo.Text = "";
@@ -91,6 +92,7 @@
             // lstbxErrores
             // 
             this.lstbxErrores.FormattingEnabled = true;
+            this.lstbxErrores.HorizontalScrollbar = true;
             this.lstbxErrores.Location = new System.Drawing.Point(35, 515);
             this.lstbxErrores.Name = "lstbxErrores";
             this.lstbxErrores.Size = new System.Drawing.Size(408, 82);
@@ -105,6 +107,7 @@
             this.btnEscanear.TabIndex = 10;
             this.btnEscanear.Text = "Escanear";
             this.btnEscanear.UseVisualStyleBackColor = true;
+            this.btnEscanear.Visible = false;
             this.btnEscanear.Click += new System.EventHandler(this.btnEscanear_Click);
             // 
             // openFileDialog1
@@ -150,9 +153,9 @@
             // dGV_Token_Lexema
             // 
             this.dGV_Token_Lexema.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dGV_Token_Lexema.Location = new System.Drawing.Point(514, 270);
+            this.dGV_Token_Lexema.Location = new System.Drawing.Point(514, 69);
             this.dGV_Token_Lexema.Name = "dGV_Token_Lexema";
-            this.dGV_Token_Lexema.Size = new System.Drawing.Size(445, 327);
+            this.dGV_Token_Lexema.Size = new System.Drawing.Size(445, 528);
             this.dGV_Token_Lexema.TabIndex = 16;
             // 
             // panel1
