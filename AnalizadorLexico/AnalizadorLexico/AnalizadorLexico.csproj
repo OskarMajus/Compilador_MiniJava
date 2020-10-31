@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analizador_Sintactico\Analizador.cs" />
     <Compile Include="Analizador_Sintactico\Gramatica.cs" />
     <Compile Include="Analizador_Sintactico\LRItems.cs" />
     <Compile Include="Analizador_Sintactico\TablaDeAnalisis.cs" />
