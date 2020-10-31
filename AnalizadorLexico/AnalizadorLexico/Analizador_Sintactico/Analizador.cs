@@ -20,6 +20,8 @@ namespace AnalizadorLexico.Analizador_Sintactico
     /// </summary>
     public class Analizador
     {
-
+        HashSet<int>[] m_firstSets;
+        List<LR0Item> m_lr0Items;
+        List<LR1Item> m_lr1Items;
     }
 }

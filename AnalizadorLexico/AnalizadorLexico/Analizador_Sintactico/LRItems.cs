@@ -9,7 +9,7 @@ namespace AnalizadorLexico.Analizador_Sintactico
     /// <summary>
     /// Elemento Necesario para construir analizador LR0
     /// </summary>
-    public class LR0Items
+    public class LR0Item
     {
         public int Produccion { get; set; }
         public int Posición { get; set; }
