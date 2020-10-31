@@ -19,7 +19,7 @@ namespace AnalizadorLexico.Analizador_Sintactico
     /// <summary>
     /// Las producciones de la gramática
     /// </summary>
-    public class Producciones
+    public class Produccion
     {
         public int Left { get; set; }
         public int [] Right { get; set; }
@@ -31,7 +31,7 @@ namespace AnalizadorLexico.Analizador_Sintactico
     public class GruposPrecedencia
     {
         public Derivacion Derivacion { get; set; }
-        public Producciones[] Producciones { get; set; }
+        public Produccion[] Producciones { get; set; }
     }
 
     /// <summary>

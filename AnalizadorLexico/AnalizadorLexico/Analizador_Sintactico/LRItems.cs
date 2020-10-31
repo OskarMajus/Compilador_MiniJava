@@ -12,11 +12,11 @@ namespace AnalizadorLexico.Analizador_Sintactico
     public class LR0Item
     {
         public int Produccion { get; set; }
-        public int Posición { get; set; }
+        public int Posicion { get; set; }
 
-        public bool Iguales(LR0Items item)
+        public bool EsIgualA(LR0Item item)
         {
-            return (Produccion == item.Produccion) && (Posición == item.Posición);
+            return (Produccion == item.Produccion) && (Posicion == item.Posicion);
         }
     }
 

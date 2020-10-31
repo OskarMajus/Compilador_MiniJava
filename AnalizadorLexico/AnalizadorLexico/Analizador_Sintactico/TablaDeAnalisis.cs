@@ -36,6 +36,6 @@ namespace AnalizadorLexico.Analizador_Sintactico
     /// </summary>
     public class TablaDeAnalisis
     {
-        public Action [,] Actions { get; set; }
+        public Accion [,] Actions { get; set; }
     }
 }
